@@ -19,15 +19,17 @@ services:
       # Set HF_TOKEN in the Render dashboard (sync: false = not synced from file)
       - key: HF_TOKEN
         sync: false
-      # Optional Twilio SMS — set in Render dashboard
-      - key: TWILIO_ACCOUNT_SID
-        sync: false
-      - key: TWILIO_AUTH_TOKEN
-        sync: false
-      - key: TWILIO_FROM_NUMBER
-        sync: false
-      - key: DEFAULT_NOTIFICATION_TO
-        sync: false
+       # Optional Twilio SMS — set in Render dashboard
+       - key: ENABLE_TWILIO
+         value: "false"
+       - key: TWILIO_ACCOUNT_SID
+         sync: false
+       - key: TWILIO_AUTH_TOKEN
+         sync: false
+       - key: TWILIO_FROM_NUMBER
+         sync: false
+       - key: DEFAULT_NOTIFICATION_TO
+         sync: false
       # GPU device: "auto" selects cuda:0 if available, cpu otherwise
       - key: YOLO_DEVICE
         value: auto

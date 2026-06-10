@@ -26,6 +26,7 @@ def create_app() -> Flask:
                 "status": "ok",
                 "app": Settings.APP_NAME,
                 "inference": inference_service.status(),
+                "twilio_enabled": Settings.ENABLE_TWILIO,
             }
         )
 

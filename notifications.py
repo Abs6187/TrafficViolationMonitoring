@@ -9,6 +9,9 @@ except Exception:  # pragma: no cover - optional dependency at runtime
 
 
 def send_violation_sms(numberplate: str, recipient: str = "") -> Tuple[bool, str]:
+    if not Settings.ENABLE_TWILIO:
+        return False, "notification skipped: Twilio integration is disabled"
+
     destination = (recipient or Settings.DEFAULT_NOTIFICATION_TO).strip()
     if not destination:
         return False, "notification skipped: no destination phone number configured"

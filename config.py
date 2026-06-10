@@ -37,6 +37,7 @@ class Settings:
     VIDEO_FRAME_STRIDE = max(1, int(os.getenv("VIDEO_FRAME_STRIDE", "3")))
     OCR_LANGS = [item.strip() for item in os.getenv("OCR_LANGS", "en").split(",") if item.strip()]
 
+    ENABLE_TWILIO = _bool_env("ENABLE_TWILIO", False)
     TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "").strip()
     TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "").strip()
     TWILIO_FROM_NUMBER = os.getenv("TWILIO_FROM_NUMBER", "").strip()

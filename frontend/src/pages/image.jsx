@@ -14,6 +14,20 @@ export function Image() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
 
+  const [twilioEnabled, setTwilioEnabled] = useState(false);
+
+  useEffect(() => {
+    const checkTwilioStatus = async () => {
+      try {
+        const response = await axios.get(apiUrl("/health"));
+        setTwilioEnabled(response.data.twilio_enabled);
+      } catch (err) {
+        console.error("Error fetching Twilio status:", err);
+      }
+    };
+    checkTwilioStatus();
+  }, []);
+
   useEffect(() => {
     const detectTrafficViolation = async () => {
       if (!file) {
@@ -87,12 +101,18 @@ export function Image() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <input
-            className="rounded-md border border-slate-300 px-3 py-2"
-            placeholder="Phone number for SMS (optional)"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
+          {twilioEnabled ? (
+            <input
+              className="rounded-md border border-slate-300 px-3 py-2"
+              placeholder="Phone number for SMS (optional)"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
+          ) : (
+            <div className="text-xs text-slate-500 bg-slate-50 border border-slate-200 p-2.5 rounded-md">
+              ℹ️ SMS Notifications (Twilio) is disabled. Set <code>ENABLE_TWILIO=true</code> in your environment to enable.
+            </div>
+          )}
         </div>
         <button className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 mt-5 disabled:cursor-not-allowed disabled:opacity-50" disabled={!numberplate || numberplate === "No number plate detected"} onClick={async function(){
           try {

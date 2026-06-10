@@ -80,6 +80,7 @@
 
 | Variable | Default | Purpose |
 |---|---|---|
+| `ENABLE_TWILIO` | `false` | Set `true` to enable SMS notifications (disabled by default) |
 | `TWILIO_ACCOUNT_SID` | `` | Twilio account SID |
 | `TWILIO_AUTH_TOKEN` | `` | Twilio auth token |
 | `TWILIO_FROM_NUMBER` | `` | Twilio sender number |
@@ -102,7 +103,7 @@ app.py              <- Flask app factory + API routes + static serving
 config.py           <- All env var parsing; central Settings class
 detection.py        <- YOLO inference + EasyOCR OCR; InferenceService class
 storage.py          <- SQLite violation CRUD; auto-creates DB on import
-notifications.py    <- Twilio SMS wrapper; silently skips if not configured
+notifications.py    <- Twilio SMS wrapper; silently skips if not configured or disabled
 requirements.txt    <- Python deps (Flask, ultralytics, easyocr, torch, etc.)
 Dockerfile          <- Multi-stage: Node builds React then Python runs Flask
 render.yaml         <- Render Blueprint: Docker web service definition
@@ -116,12 +117,12 @@ forimage.py         <- Legacy image script shim (not needed)
 
 ## Model Details
 
-- **Architecture**: YOLOv8 (ultralytics)
+- **Architecture**: YOLOv11n (ultralytics)
 - **Classes** (order matters, indices 0-3):
-  - 0: `with helmet`
-  - 1: `without helmet`
-  - 2: `rider`
-  - 3: `number plate`
+  - 0: `helmet`
+  - 1: `licenseplate`
+  - 2: `motorcyclist`
+  - 3: `nohelmet`
 - **Source file**: `best.pt` at https://huggingface.co/spaces/Abs6187/Helmet-License-Plate-Detection/blob/main/best.pt
 - **Download method**: `huggingface_hub.hf_hub_download(repo_id=..., repo_type="space", filename="best.pt", token=...)`
 
@@ -189,4 +190,4 @@ git push origin main
 
 ---
 
-*Last updated: 2026-06-10 by AI assistant (Claude Sonnet 4.6)*
+*Last updated: 2026-06-10 by AI assistant (Gemini 3.5 Flash)*
