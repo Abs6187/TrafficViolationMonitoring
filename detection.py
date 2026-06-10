@@ -39,6 +39,12 @@ class InferenceService:
     # Source: Abs6187/Helmet-License-Plate-Detection (HuggingFace Space)
     # {0: "helmet", 1: "licenseplate", 2: "motorcyclist", 3: "nohelmet"}
     CLASS_NAMES = ["helmet", "licenseplate", "motorcyclist", "nohelmet"]
+    DISPLAY_LABELS = {
+        "helmet": "With Helmet",
+        "nohelmet": "Without Helmet",
+        "licenseplate": "License Plate",
+        "motorcyclist": "Motorcyclist"
+    }
 
     def __init__(self) -> None:
         self._model = None
@@ -146,10 +152,11 @@ class InferenceService:
                 label = self.CLASS_NAMES[cls] if cls < len(self.CLASS_NAMES) else f"class-{cls}"
                 color = (0, 0, 255) if label in {"nohelmet", "licenseplate"} else (255, 0, 0)
 
+                display_label = self.DISPLAY_LABELS.get(label, label)
                 cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 2)
                 cv2.putText(
                     annotated,
-                    f"{label} {conf:.2f}",
+                    f"{display_label} {conf:.2f}",
                     (x1, max(20, y1 - 10)),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
@@ -159,7 +166,7 @@ class InferenceService:
 
                 detections.append(
                     {
-                        "label": label,
+                        "label": display_label,
                         "confidence": conf,
                         "bbox": [x1, y1, x2, y2],
                     }

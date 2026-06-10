@@ -24,7 +24,8 @@ class Settings:
     DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
     DATABASE_PATH = Path(os.getenv("DATABASE_PATH", DATA_DIR / "violations.db"))
 
-    MODEL_PATH = Path(os.getenv("MODEL_PATH", BASE_DIR / "models" / "best.pt"))
+    _default_path = BASE_DIR / "best.pt" if (BASE_DIR / "best.pt").exists() else BASE_DIR / "models" / "best.pt"
+    MODEL_PATH = Path(os.getenv("MODEL_PATH", _default_path))
     HF_MODEL_REPO = os.getenv("HF_MODEL_REPO", "").strip()
     HF_MODEL_FILENAME = os.getenv("HF_MODEL_FILENAME", "best.pt").strip()
     HF_TOKEN = os.getenv("HF_TOKEN", "").strip() or None
