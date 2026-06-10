@@ -144,7 +144,7 @@ class InferenceService:
                 conf = math.ceil((float(box[4]) * 100)) / 100
                 cls = int(box[5])
                 label = self.CLASS_NAMES[cls] if cls < len(self.CLASS_NAMES) else f"class-{cls}"
-                color = (0, 0, 255) if label in {"without helmet", "number plate"} else (255, 0, 0)
+                color = (0, 0, 255) if label in {"nohelmet", "licenseplate"} else (255, 0, 0)
 
                 cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 2)
                 cv2.putText(
@@ -211,6 +211,7 @@ class InferenceService:
     def process_video(self, video_bytes: bytes) -> Tuple[bytes, Dict]:
         source_file = None
         output_file = None
+        h264_file = None
         try:
             with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as src:
                 src.write(video_bytes)
@@ -263,7 +264,29 @@ class InferenceService:
             capture.release()
             writer.release()
 
-            with open(output_file, "rb") as handle:
+            # Transcode the mp4v video to H.264 (avc1) / AAC using FFmpeg
+            # so that web browsers can native play the video file back.
+            h264_file = output_file + "_h264.mp4"
+            import subprocess
+            try:
+                subprocess.run(
+                    [
+                        "ffmpeg", "-y", "-i", output_file,
+                        "-vcodec", "libx264",
+                        "-pix_fmt", "yuv420p",
+                        "-acodec", "aac",
+                        h264_file
+                    ],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=True
+                )
+                final_file = h264_file
+            except Exception as ffmpeg_err:
+                print(f"FFmpeg transcoding failed, falling back to raw output: {ffmpeg_err}")
+                final_file = output_file
+
+            with open(final_file, "rb") as handle:
                 payload = handle.read()
 
             return payload, {
@@ -275,7 +298,7 @@ class InferenceService:
             self._last_error = str(exc)
             raise
         finally:
-            for path in [source_file, output_file]:
+            for path in [source_file, output_file, h264_file]:
                 if path and os.path.exists(path):
                     try:
                         os.remove(path)
