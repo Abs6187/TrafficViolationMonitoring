@@ -6,4 +6,4 @@ numpy==1.26.4
 opencv-python-headless==4.10.0.84
 torch==2.3.1
 twilio==9.2.1
-ultralytics==8.2.77
+ultralytics>=8.3.0
