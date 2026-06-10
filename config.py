@@ -28,6 +28,9 @@ class Settings:
     HF_MODEL_REPO = os.getenv("HF_MODEL_REPO", "").strip()
     HF_MODEL_FILENAME = os.getenv("HF_MODEL_FILENAME", "best.pt").strip()
     HF_TOKEN = os.getenv("HF_TOKEN", "").strip() or None
+    # "space" is needed when the model file lives in a HuggingFace Space repo
+    # (as opposed to a regular model repo). Set to "model" or "dataset" as needed.
+    HF_REPO_TYPE = os.getenv("HF_REPO_TYPE", "space").strip()
 
     YOLO_DEVICE = os.getenv("YOLO_DEVICE", "auto").strip().lower()
     YOLO_CONFIDENCE = float(os.getenv("YOLO_CONFIDENCE", "0.45"))

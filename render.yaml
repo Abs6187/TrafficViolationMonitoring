@@ -9,12 +9,17 @@ services:
     envVars:
       - key: PORT
         value: "5000"
+      # Hugging Face model source — model lives in a HF Space repo
       - key: HF_MODEL_REPO
-        sync: false
+        value: Abs6187/Helmet-License-Plate-Detection
       - key: HF_MODEL_FILENAME
         value: best.pt
+      - key: HF_REPO_TYPE
+        value: space
+      # Set HF_TOKEN in the Render dashboard (sync: false = not synced from file)
       - key: HF_TOKEN
         sync: false
+      # Optional Twilio SMS — set in Render dashboard
       - key: TWILIO_ACCOUNT_SID
         sync: false
       - key: TWILIO_AUTH_TOKEN
@@ -23,5 +28,6 @@ services:
         sync: false
       - key: DEFAULT_NOTIFICATION_TO
         sync: false
+      # GPU device: "auto" selects cuda:0 if available, cpu otherwise
       - key: YOLO_DEVICE
         value: auto

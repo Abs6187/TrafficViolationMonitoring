@@ -52,25 +52,40 @@ class InferenceService:
             return
         if not Settings.HF_MODEL_REPO:
             raise FileNotFoundError(
-                f"Model not found at {Settings.MODEL_PATH}. Set MODEL_PATH or configure HF_MODEL_REPO/HF_MODEL_FILENAME."
+                f"Model not found at {Settings.MODEL_PATH}. "
+                "Set MODEL_PATH or configure HF_MODEL_REPO/HF_MODEL_FILENAME."
             )
         if hf_hub_download is None:
             raise RuntimeError("huggingface_hub is required to download models automatically")
 
-        downloaded_path = hf_hub_download(
-            repo_id=Settings.HF_MODEL_REPO,
-            filename=Settings.HF_MODEL_FILENAME,
-            token=Settings.HF_TOKEN,
-        )
-        os.replace(downloaded_path, Settings.MODEL_PATH)
+        # The model is hosted inside a HuggingFace Space, so repo_type must be
+        # "space" (not the default "model"). This is controlled via HF_REPO_TYPE.
+        try:
+            downloaded_path = hf_hub_download(
+                repo_id=Settings.HF_MODEL_REPO,
+                filename=Settings.HF_MODEL_FILENAME,
+                repo_type=Settings.HF_REPO_TYPE,
+                token=Settings.HF_TOKEN,
+            )
+            os.replace(downloaded_path, Settings.MODEL_PATH)
+        except Exception as exc:
+            self._last_error = str(exc)
+            raise RuntimeError(
+                f"Failed to download model from HuggingFace "
+                f"({Settings.HF_MODEL_REPO}/{Settings.HF_MODEL_FILENAME}): {exc}"
+            ) from exc
 
     def _load_model(self) -> YOLO:
         with self._lock:
             if self._model is not None:
                 return self._model
-            self._ensure_model_path()
-            self._model = YOLO(str(Settings.MODEL_PATH))
-            return self._model
+            try:
+                self._ensure_model_path()
+                self._model = YOLO(str(Settings.MODEL_PATH))
+                return self._model
+            except Exception as exc:
+                self._last_error = str(exc)
+                raise
 
     def _load_reader(self):
         with self._lock:
