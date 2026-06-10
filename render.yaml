@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: traffic-violation-monitoring
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "5000"
+      - key: HF_MODEL_REPO
+        sync: false
+      - key: HF_MODEL_FILENAME
+        value: best.pt
+      - key: HF_TOKEN
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_FROM_NUMBER
+        sync: false
+      - key: DEFAULT_NOTIFICATION_TO
+        sync: false
+      - key: YOLO_DEVICE
+        value: auto
