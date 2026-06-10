@@ -8,6 +8,7 @@ venv/
 env/
 .env
 .env.*
+!.env.example
 node_modules/
 uploads/
 tmp/
@@ -16,3 +17,4 @@ models/
 frontend/dist/
 backend/uploads/
 *.log
+.DS_Store
