@@ -34,7 +34,11 @@ class DetectionSummary:
 
 
 class InferenceService:
-    CLASS_NAMES = ["with helmet", "without helmet", "rider", "number plate"]
+    # Class names verified by reading models/best.pt directly:
+    # Model: YOLOv11n  |  nc=4  |  imgsz=640  |  batch=16
+    # Source: Abs6187/Helmet-License-Plate-Detection (HuggingFace Space)
+    # {0: "helmet", 1: "licenseplate", 2: "motorcyclist", 3: "nohelmet"}
+    CLASS_NAMES = ["helmet", "licenseplate", "motorcyclist", "nohelmet"]
 
     def __init__(self) -> None:
         self._model = None
@@ -161,11 +165,11 @@ class InferenceService:
                     }
                 )
 
-                if label == "rider":
+                if label == "motorcyclist":
                     rider_detected = True
-                if label == "without helmet":
+                if label == "nohelmet":
                     violation_detected = True
-                if label == "number plate" and rider_detected:
+                if label == "licenseplate" and rider_detected:
                     cropped = annotated[max(y1, 0):max(y2, 0), max(x1, 0):max(x2, 0)]
                     if cropped.size != 0:
                         number_plate_text = self._extract_number_plate(cropped) or number_plate_text

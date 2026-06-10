@@ -42,8 +42,8 @@ const VideoPlayer = () => {
   return (
     <div className="min-h-screen">
       <header className="pl-4 bg-slate-100 text-white shadow-lg flex justify-between items-center">
-        <img src="../../public/images/logo.png" alt="logo" className="h-20 w-20" />
-        <p className="text-red-600 text-2xl font-semibold font-sans">Traffic Violation Monitoring</p>
+        <img src="/logo.png" alt="TrafficGuard AI" className="h-20 w-20 object-contain" />
+        <p className="text-red-600 text-2xl font-semibold font-sans">TrafficGuard AI — Helmet &amp; ANPR</p>
         <div className="w-40"></div>
       </header>
 
