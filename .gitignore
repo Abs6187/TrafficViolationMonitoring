@@ -29,7 +29,6 @@ frontend/dist/
 uploads/
 tmp/
 data/
-models/
 
 # Large video files — use scripts/download_sample_video.py for the full dataset
 # sample_demo.mp4 is intentionally committed (trimmed to ~1 MB for demo)
